@@ -79,7 +79,7 @@ lib/
 1. **Clone the repository**
 
    ```sh
-   git clone https://github.com/yourusername/Mobile-Weather-App.git
+   git clone https://github.com/SJKD23/Mobile-Weather-App.git
    cd mobile-weather-app
    ```
 
