@@ -1,42 +1,48 @@
-import { useEffect, useState } from 'react';
-import useDebounce from './useDebounce';
+import Constants from 'expo-constants';
+import { useState } from 'react';
 import { fetchJSON } from '../lib/fetchJSON';
 
-const GEO_API_BASE = 'https://api.openweathermap.org/geo/1.0/direct';
-const API_KEY = process.env.EXPO_PUBLIC_WEATHER_API_KEY || '';
-
+// Represents a city suggestion from the API
 export interface CitySuggestion {
   name: string;
-  lat: number;
-  lon: number;
   country: string;
   state?: string;
+  lat: number;
+  lon: number;
 }
 
-export default function useCitySuggestions(query: string, limit = 5): CitySuggestion[] {
-  const [suggestions, setSuggestions] = useState<CitySuggestion[]>([]);
-  const debouncedQuery = useDebounce(query, 300);
+// API key is loaded from app config at runtime
+const API_KEY = Constants.expoConfig?.extra?.WEATHER_API_KEY || '';
 
-  useEffect(() => {
-    if (!debouncedQuery || debouncedQuery.length < 2) {
+// Fetches city suggestions for a given search string.
+// Useful for autocomplete or search dropdowns.
+export default function useCitySuggestions() {
+  const [suggestions, setSuggestions] = useState<CitySuggestion[]>([]);
+
+  // Calls OpenWeatherMap's geocoding API to get city matches.
+  const fetchSuggestions = async (query: string, limit = 5) => {
+    // If the query is empty or just spaces, clear suggestions and exit
+    if (!query.trim()) {
       setSuggestions([]);
       return;
     }
 
-    const ctrl = new AbortController();
-    const url = `${GEO_API_BASE}?q=${encodeURIComponent(debouncedQuery)}&limit=${limit}&appid=${API_KEY}`;
+    try {
+      // Calls the geocoding endpoint with the user's query
+      const response = await fetchJSON<CitySuggestion[]>(
+        `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(
+          query
+        )}&limit=${limit}&appid=${API_KEY}`
+      );
+      // Only set suggestions if the response is an array
+      setSuggestions(Array.isArray(response) ? response : []);
+    } catch (error) {
+      // On error, log and clear suggestions so UI doesn't show stale data
+      console.error('Suggestion fetch error:', error);
+      setSuggestions([]);
+    }
+  };
 
-    fetchJSON(url, { signal: ctrl.signal })
-      .then((data) => setSuggestions(data))
-      .catch((err) => {
-        if (err.name !== 'AbortError') {
-          console.error('City suggestions error:', err);
-          setSuggestions([]);
-        }
-      });
-
-    return () => ctrl.abort();
-  }, [debouncedQuery, limit]);
-
-  return suggestions;
+  // Expose the current suggestions and the fetch function
+  return { suggestions, fetchSuggestions };
 }

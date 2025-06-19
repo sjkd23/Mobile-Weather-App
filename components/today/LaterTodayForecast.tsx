@@ -1,11 +1,12 @@
+// components/today/LaterTodayForecast.tsx
 import { getTheme } from '@/constants/Themes';
 import { useThemeMode } from '@/context/ThemeContext';
 import { StyleSheet, Text, View, useColorScheme } from 'react-native';
+import ForecastCard from '../forecast/ForecastCard';
 import GradientDivider from '../GradientLine';
 import SectionWrapper from '../SectionWrapper';
-import ForecastCard from './ForecastCard';
 
-// Expects an array of forecast data and a temperature unit
+// Expects forecast data for today and a temperature unit
 interface ForecastProps {
   data: {
     dt_txt: string;
@@ -15,10 +16,12 @@ interface ForecastProps {
   unit: 'metric' | 'imperial';
 }
 
-export default function Forecast({ data, unit }: ForecastProps) {
-  // Filter for daily forecasts at noon (12:00:00)
-  const daily = data.filter((d) => d.dt_txt.includes('12:00:00'));
-  // Use theme from context, fallback to system if set
+export default function LaterTodayForecast({ data, unit }: ForecastProps) {
+  // Only show the next three forecast entries after the current time
+  const now = new Date();
+  const nextCutoff = data.filter((d) => new Date(d.dt_txt) > now).slice(0, 3);
+
+  // Use theme from context, falling back to system preference if set
   const { mode } = useThemeMode();
   const system = useColorScheme() ?? 'light';
   const effective = mode === 'system' ? system : mode;
@@ -26,18 +29,19 @@ export default function Forecast({ data, unit }: ForecastProps) {
 
   return (
     <SectionWrapper>
+      {/* Section header styled with theme color */}
       <Text style={[styles.sectionTitle, { color: theme.text }]}>
-        5 Day Forecast
+        Later Today
       </Text>
       <GradientDivider />
       <View style={styles.row}>
-        {/* Show up to 5 daily forecast cards */}
-        {daily.slice(0, 5).map((item, idx) => (
+        {/* Render up to three upcoming forecast cards */}
+        {nextCutoff.map((item, idx) => (
           <ForecastCard
             key={idx}
             forecast={item}
             unit={unit}
-            variant="daily"
+            variant="hourly"
           />
         ))}
       </View>
@@ -45,7 +49,7 @@ export default function Forecast({ data, unit }: ForecastProps) {
   );
 }
 
-// Styles for section and row layout
+// Layout and typography for the section
 const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,

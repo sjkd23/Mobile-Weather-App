@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 interface ErrorProps {
   message: string;
 }
 
+// Error displays a warning message in a styled container.
+// The message is passed as a prop and shown with a warning icon.
 export default function Error({ message }: ErrorProps) {
   return (
     <View style={styles.container}>

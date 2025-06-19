@@ -1,20 +1,38 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { getTheme } from '@/constants/Themes';
+import { useThemeMode } from '@/context/ThemeContext';
+import { StyleSheet, Text, useColorScheme, View } from 'react-native';
 
+// Footer displays attribution and copyright.
+// It adapts its background and text color based on the current theme.
 export default function Footer() {
+  const { mode } = useThemeMode();
+  // Detect system color scheme if mode is set to system
+  const system = useColorScheme() ?? 'light';
+  const effective = mode === 'system' ? system : mode;
+  // Get theme colors for the footer
+  const theme = getTheme(effective);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Powered by OpenWeatherMap</Text>
+    <View
+      style={[styles.container, { backgroundColor: theme.footerBackground }]}
+    >
+      <Text style={[styles.text, { color: theme.text }]}>
+        Powered by the OpenWeatherMap API
+      </Text>
+      <Text style={[styles.text, { color: theme.text }]}>© Dylan Stauch</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 12,
+    width: '100%',
+    paddingVertical: 10,
     alignItems: 'center',
   },
   text: {
-    color: '#888',
     fontSize: 12,
+    textAlign: 'center',
+    marginVertical: 2,
   },
 });

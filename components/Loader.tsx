@@ -1,5 +1,7 @@
-import { ActivityIndicator, View, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
+// Simple loading spinner for async operations.
+// Centered with vertical margin for spacing.
 export default function Loader() {
   return (
     <View style={styles.container}>

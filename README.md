@@ -1,50 +1,133 @@
-# Welcome to your Expo app 👋
+# Mobile Weather App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A modern, easy-to-use weather forecasting **mobile application** built with React Native and Expo.
 
-## Get started
+---
 
-1. Install dependencies
+## Overview
 
-   ```bash
+The Mobile Weather App is a cross-platform tool that lets you search for cities, view current weather, and see a 5-day forecast; all in a clean, responsive mobile UI. It uses the OpenWeatherMap API for real-time weather and city lookups. You can easily toggle between light/dark mode, switch Celsius/Fahrenheit, and all your preferences are saved automatically.
+
+---
+
+## Features
+
+- **Search any city worldwide** with auto-suggestions
+- **See current weather conditions**  
+  (temperature, “feels like,” humidity, wind, weather icons, and more)
+- **5-day forecast**: Daily high/low, weather icons, and text descriptions
+- **Celsius ↔ Fahrenheit toggle**
+- **Light and dark theme support** (system-aware)
+- **Robust error handling** with friendly messages
+- **Loading indicators** for a smooth experience
+- **Designed for mobile**: Fully touch-friendly and responsive
+- **Persistent preferences** (unit, theme) with AsyncStorage
+
+---
+
+## Project Structure
+
+```plaintext
+app/
+  index.tsx                 # App entry point, navigation
+  _layout.tsx               # Root layout (Expo Router)
+components/
+  Header.tsx                # App header, title, theme toggle
+  Footer.tsx                # App footer
+  SearchBar.tsx             # City search with suggestions
+  Error.tsx                 # Error message display
+  Loader.tsx                # Loading spinner
+  UnitToggle.tsx            # Celsius/Fahrenheit toggle
+  ThemeToggle.tsx           # Light/Dark toggle
+  SectionWrapper.tsx        # UI wrapper component
+  GradientLine.tsx          # Themed line divider
+  forecast/
+    Forecast.tsx            # Forecast list/grid logic
+    ForecastCard.tsx        # Individual forecast card
+  today/
+    CurrentWeatherCard.tsx  # Current weather card
+    LaterTodayForecast.tsx  # Later today’s forecast
+hooks/
+  useWeatherData.ts         # Fetches weather and forecast data
+  useCitySuggestions.ts     # Fetches city suggestions for search
+  useDebounce.ts            # Debounce utility for input
+context/
+  ThemeContext.tsx          # Theme state/context management
+  UnitContext.tsx           # Unit state/context management
+constants/
+  Colors.ts                 # Centralized color palette
+  Themes.ts                 # Theme definitions
+lib/
+  fetchJSON.ts              # API fetch helper with error handling
+````
+
+---
+
+## External Libraries & Frameworks
+
+- [React Native](https://reactnative.dev/) – Native app framework
+- [Expo](https://expo.dev/) – Mobile toolchain & build system
+- [React Navigation](https://reactnavigation.org/) – Navigation
+- [OpenWeatherMap API](https://openweathermap.org/api) – Weather and geocoding data
+- [AsyncStorage](https://react-native-async-storage.github.io/async-storage/) – Saves your theme/unit settings
+- [Expo Vector Icons](https://icons.expo.fyi/) – App icons
+
+---
+
+## Installation & Setup
+
+1. **Clone the repository**
+
+   ```sh
+   git clone https://github.com/yourusername/Mobile-Weather-App.git
+   cd mobile-weather-app
+   ```
+
+2. **Install dependencies**
+
+   ```sh
    npm install
    ```
 
-2. Start the app
+3. **Set up environment variables**
 
-   ```bash
+   - Create a `.env` file in the project root:
+
+     ```env
+     EXPO_WEATHER_API_KEY=your_openweathermap_api_key
+     ```
+
+    [Get your API key from OpenWeatherMap](https://openweathermap.org/appid)
+
+4. **Start the Expo development server**
+
+   ```sh
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+   - Follow the prompts to launch on your emulator or real device (scan QR code with Expo Go).
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## How to Use
 
-## Get a fresh project
+- **Search** for any city using the search bar.
+- Instantly **see current weather** and a **5-day forecast**.
+- **Switch units** or **toggle dark mode** from the header—your choices are saved.
+- Works great on Android and iOS.
 
-When you're ready, run:
+---
 
-```bash
-npm run reset-project
-```
+## Code Organization Notes
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+- **App entry/navigation:** `app/index.tsx` and `app/_layout.tsx` (Expo Router)
+- **Weather data fetching:** in `hooks/` and `lib/fetchJSON.ts`
+- **UI components:** in `components/` (organized by feature)
+- **Theme and color management:** `constants/` and `context/ThemeContext.tsx`
+- **All user preferences** are persisted with AsyncStorage
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+## License
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+MIT
